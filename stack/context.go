@@ -636,7 +636,9 @@ func parseFunc(c *Call, line string) (bool, error) {
 			if c.Args.Values == nil {
 				c.Args.Values = make([]Arg, 0, 4)
 			}
-			c.Args.Values = append(c.Args.Values, Arg{Value: v})
+			a := Arg{Value: v}
+			a.process()
+			c.Args.Values = append(c.Args.Values, a)
 		}
 		return true, nil
 	}

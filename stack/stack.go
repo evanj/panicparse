@@ -104,19 +104,16 @@ func (f *Func) String() string {
 
 // Arg is an argument on a Call.
 type Arg struct {
-	Value uint64 // Value is the raw value as found in the stack trace
-	Name  string // Name is a pseudo name given to the argument
-}
+	// Value is the raw value as found in the stack trace
+	Value uint64
+	// Name is a pseudo name given to the argument
+	Name string
+	// IsPtr is true if we guess it's a pointer. It's only a guess, it can be
+	// easily be confused by a bitmask.
+	IsPtr bool
 
-// IsPtr returns true if we guess it's a pointer. It's only a guess, it can be
-// easily be confused by a bitmask.
-func (a *Arg) IsPtr() bool {
-	// Assumes all pointers are above 8MiB and positive; assuming that above half
-	// the memory is kernel memory. This is not always true.
-	// Assume the stack was generated with the same bitness (32 vs 64) than the
-	// code processing it.
-	const maxInt = uint64(int((^uint(0)) >> 1))
-	return a.Value > 8*1024*1024 && a.Value < maxInt
+	// Disallow initialization with unnamed parameters.
+	_ struct{}
 }
 
 var lookup = []string{"0", "1", "2", "3", "4", "5", "6", "7", "8", "9"}
@@ -132,6 +129,15 @@ func (a *Arg) String() string {
 	return fmt.Sprintf("0x%x", a.Value)
 }
 
+func (a *Arg) process() {
+	// Assumes all pointers are above 8MiB and positive; assuming that above half
+	// the memory is kernel memory. This is not always true.
+	// Assume the stack was generated with the same bitness (32 vs 64) than the
+	// code processing it.
+	const maxInt = uint64(int((^uint(0)) >> 1))
+	a.IsPtr = a.Value > 8*1024*1024 && a.Value < maxInt
+}
+
 // similar returns true if the two Arg are equal or almost but not quite equal.
 func (a *Arg) similar(r *Arg, similar Similarity) bool {
 	switch similar {
@@ -140,10 +146,10 @@ func (a *Arg) similar(r *Arg, similar Similarity) bool {
 	case AnyValue:
 		return true
 	case AnyPointer:
-		if a.IsPtr() != r.IsPtr() {
+		if a.IsPtr != r.IsPtr {
 			return false
 		}
-		return a.IsPtr() || a.Value == r.Value
+		return a.IsPtr || a.Value == r.Value
 	default:
 		return false
 	}
@@ -159,6 +165,9 @@ type Args struct {
 	Processed []string
 	// Elided when set means there was a trailing ", ...".
 	Elided bool
+
+	// Disallow initialization with unnamed parameters.
+	_ struct{}
 }
 
 func (a *Args) String() string {
@@ -214,6 +223,7 @@ func (a *Args) merge(r *Args) Args {
 		if l != r.Values[i] {
 			out.Values[i].Name = "*"
 			out.Values[i].Value = l.Value
+			out.Values[i].IsPtr = l.IsPtr
 		} else {
 			out.Values[i] = l
 		}
@@ -610,7 +620,7 @@ func nameArguments(goroutines []*Goroutine) {
 		for j := range goroutines[i].Stack.Calls {
 			for k := range goroutines[i].Stack.Calls[j].Args.Values {
 				arg := goroutines[i].Stack.Calls[j].Args.Values[k]
-				if arg.IsPtr() {
+				if arg.IsPtr {
 					objects[arg.Value] = object{
 						args:      append(objects[arg.Value].args, &goroutines[i].Stack.Calls[j].Args.Values[k]),
 						inPrimary: objects[arg.Value].inPrimary || i == 0,

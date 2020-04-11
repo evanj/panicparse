@@ -245,29 +245,6 @@ func TestAugment(t *testing.T) {
 			},
 		},
 		{
-			"non-pointer method",
-			`func main() {
-				var s S
-				s.f()
-			}
-			type S struct {}
-			func (s S) f() {
-				panic("ooh")
-			}`,
-			true,
-			true,
-			Stack{
-				Calls: []Call{
-					newCall(
-						"main.S.f",
-						Args{},
-						"main.go",
-						8),
-					newCall("main.main", Args{}, "main.go", 4),
-				},
-			},
-		},
-		{
 			"pointer method",
 			`func main() {
 				var s S
@@ -629,6 +606,8 @@ func zapPointers(t *testing.T, name string, workaroundGo111Elided bool, want, s 
 func zapPaths(s *Stack) {
 	for j := range s.Calls {
 		s.Calls[j].SrcPath = filepath.Base(s.Calls[j].SrcPath)
+		s.Calls[j].SrcName = ""
+		s.Calls[j].DirSrc = ""
 		s.Calls[j].LocalSrcPath = ""
 	}
 }

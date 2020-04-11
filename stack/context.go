@@ -386,6 +386,10 @@ func (s *scanningState) scan(line string) (string, error) {
 		}
 		c := Call{}
 		if found, err := parseFunc(&c, trimmed); found {
+			// Increase performance by always allocating 4 calls minimally.
+			if cur.Stack.Calls == nil {
+				cur.Stack.Calls = make([]Call, 0, 4)
+			}
 			cur.Stack.Calls = append(cur.Stack.Calls, c)
 			s.state = gotFunc
 			return "", err
@@ -501,7 +505,7 @@ func (s *scanningState) scan(line string) (string, error) {
 		c := Call{}
 		if found, err := parseFunc(&c, trimmed); found {
 			// TODO(maruel): Figure out.
-			//cur.Stack.Calls = append(cur.Stack.Calls, *call)
+			//cur.Stack.Calls = append(cur.Stack.Calls, c)
 			s.state = gotRaceOperationFunc
 			return "", err
 		}
@@ -652,8 +656,9 @@ func parseFile(c *Call, line string) (bool, error) {
 		if err != nil {
 			return true, fmt.Errorf("failed to parse int on line: %q", strings.TrimSpace(line))
 		}
-		c.SrcPath = match[1]
-		c.Line = num
+		// TODO(maruel): This returns a string slice inside line. We may want to
+		// trim memory further.
+		c.init(match[1], num)
 		return true, nil
 	}
 	return false, nil

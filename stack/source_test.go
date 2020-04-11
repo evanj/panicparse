@@ -48,7 +48,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}, {Value: 2}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}, {Value: 2}}},
 						"main.go",
 						10),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -69,7 +69,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -90,7 +90,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}, {Value: 1}, {Value: 1}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}, {Value: 1}, {Value: 1}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -111,7 +111,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}, {Value: 5}, {Value: 7}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}, {Value: 5}, {Value: 7}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -132,7 +132,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}, {Value: 5}, {Value: 7}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}, {Value: 5}, {Value: 7}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -153,7 +153,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}, {Value: 1}, {Value: 1}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}, {Value: 1}, {Value: 1}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -174,7 +174,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -195,7 +195,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -216,7 +216,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -237,7 +237,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -260,7 +260,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.(*S).f",
-						Args{Values: []Arg{{Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}}},
 						"main.go",
 						8),
 					newCall("main.main", Args{}, "main.go", 4),
@@ -281,7 +281,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}, {Value: 3}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}, {Value: 3}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -302,7 +302,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}, {Value: 3}, {Value: 42}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}, {Value: 3}, {Value: 42}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -350,7 +350,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}, {Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}, {Value: pointer, IsPtr: true}}},
 						"main.go",
 						7),
 					newCall("main.main", Args{}, "main.go", 4),
@@ -372,7 +372,7 @@ func TestAugment(t *testing.T) {
 				Calls: []Call{
 					newCall(
 						"main.f",
-						Args{Values: []Arg{{Value: pointer}, {Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}, {Value: pointer, IsPtr: true}}},
 						"main.go",
 						7),
 					newCall("main.main", Args{}, "main.go", 4),
@@ -395,7 +395,7 @@ func TestAugment(t *testing.T) {
 						"main.f",
 						// The value is NOT a pointer but floating point encoding is not
 						// deterministic.
-						Args{Values: []Arg{{Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -418,7 +418,7 @@ func TestAugment(t *testing.T) {
 						"main.f",
 						// The value is NOT a pointer but floating point encoding is not
 						// deterministic.
-						Args{Values: []Arg{{Value: pointer}}},
+						Args{Values: []Arg{{Value: pointer, IsPtr: true}}},
 						"main.go",
 						6),
 					newCall("main.main", Args{}, "main.go", 3),
@@ -521,8 +521,8 @@ func TestLoad(t *testing.T) {
 
 //
 
-const pointer = uint64(0xfffffffff)
-const pointerStr = "0xfffffffff"
+const pointer = uint64(0x02ffffff)
+const pointerStr = "0x2ffffff"
 
 func overrideEnv(env []string, key, value string) []string {
 	prefix := key + "="

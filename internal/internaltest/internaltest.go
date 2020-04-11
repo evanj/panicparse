@@ -110,6 +110,11 @@ func IsUsingModules() bool {
 	// Calculate the default. We assume developper builds are recent (go1.14 and
 	// later).
 	ver := getGoMinorVersion()
+	if ver > 0 && ver < 11 {
+		// go1.9.7+ and go1.10.3+ were fixed to tolerate semantic versioning import
+		// but they do not support the environment variable.
+		return false
+	}
 	def := (ver == 0 || ver >= 14)
 	s := os.Getenv("GO111MODULE")
 	return (def && (s == "auto" || s == "")) || s == "on"
@@ -171,6 +176,9 @@ func build(tool string, race bool) string {
 		args = append(args, "-race")
 	}
 	path := "github.com/maruel/panicparse/cmd/"
+	if IsUsingModules() {
+		path = "github.com/maruel/panicparse/v2/cmd/"
+	}
 	c := exec.Command("go", append(args, path+tool)...)
 	c.Stdout = os.Stdout
 	c.Stderr = os.Stderr

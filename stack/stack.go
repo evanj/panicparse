@@ -133,7 +133,8 @@ func (a *Arg) process() {
 	// the memory is kernel memory. This is not always true.
 	// Assume the stack was generated with the same bitness (32 vs 64) than the
 	// code processing it.
-	const maxInt = uint64(int((^uint(0)) >> 1))
+	const neg = ^uint(0)
+	const maxInt = uint64(neg >> 1)
 	a.IsPtr = a.Value > 8*1024*1024 && a.Value < maxInt
 }
 
